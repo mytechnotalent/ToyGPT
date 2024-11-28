@@ -33,8 +33,8 @@ Image(filename = 'ToyGPT.jpeg')
 
 This is a character-level bigram model that predicts the next character one at a time. Given an input string, the model learns to predict the next character in the sequence based on the preceding character. We'll walk through an example where the input is the sentence:
 
-"The dog ate my "  
-The goal is for the model to predict the next sequence of characters, "homework", character by character.
+`"The dog ate my "` 
+The goal is for the model to predict the next sequence of characters, `"homework"`, character by character.
 
 ---
 
@@ -44,30 +44,30 @@ The input string **"The dog ate my "** is converted into a sequence of integers 
 
 #### Vocabulary
 Suppose the vocabulary consists of the following unique characters:
-[' ', 'T', 'a', 'd', 'e', 'g', 'h', 'k', 'm', 'o', 'r', 't', 'w', 'y']
+`[' ', 'T', 'a', 'd', 'e', 'g', 'h', 'k', 'm', 'o', 'r', 't', 'w', 'y']`
 
 The vocabulary size is 14.
 
 #### Encoding
 Breaking the sentence **"The dog ate my "** into characters and mapping them using the vocabulary:
-- 'T' → 1
-- 'h' → 6
-- 'e' → 4
-- ' ' → 0
-- 'd' → 3
-- 'o' → 5
-- 'g' → 7
-- ' ' → 0
-- 'a' → 2
-- 't' → 8
-- 'e' → 4
-- ' ' → 0
-- 'm' → 9
-- 'y' → 13
-- ' ' → 0
+- `'T' → 1`
+- `'h' → 6`
+- `'e' → 4`
+- `' ' → 0`
+- `'d' → 3`
+- `'o' → 5`
+- `'g' → 7`
+- `' ' → 0`
+- `'a' → 2`
+- `'t' → 8`
+- `'e' → 4`
+- `' ' → 0`
+- `'m' → 9`
+- `'y' → 13`
+- `' ' → 0`
 
 Thus, the string **"The dog ate my "** is encoded as:
-[1, 6, 4, 0, 3, 5, 7, 0, 2, 8, 4, 0, 9, 13, 0]
+`[1, 6, 4, 0, 3, 5, 7, 0, 2, 8, 4, 0, 9, 13, 0]`
 
 ---
 
@@ -77,12 +77,12 @@ Thus, the string **"The dog ate my "** is encoded as:
 Each character in the sequence is passed through a token embedding table, which converts each integer into a dense vector of size `n_embd`.
 
 If `n_embd = 4`, the token embedding table is a matrix of size [vocab_size, n_embd]. For example:
-- 'T' (1) → [0.2, 0.1, -0.3, 0.8]
-- 'h' (6) → [0.5, -0.2, 0.1, 0.4]
-- 'e' (4) → [-0.1, 0.6, 0.3, -0.4]
+- `'T'` (1) → `[0.2, 0.1, -0.3, 0.8]`
+- `'h'` (6) → `[0.5, -0.2, 0.1, 0.4]`
+- `'e'` (4) → `[-0.1, 0.6, 0.3, -0.4]`
 
-The encoded sequence [1, 6, 4, 0, 3, 5, 7, 0, 2, 8, 4, 0, 9, 13, 0] becomes:
-[[0.2, 0.1, -0.3, 0.8], [0.5, -0.2, 0.1, 0.4], ...]
+The encoded sequence `[1, 6, 4, 0, 3, 5, 7, 0, 2, 8, 4, 0, 9, 13, 0]` becomes:
+`[[0.2, 0.1, -0.3, 0.8], [0.5, -0.2, 0.1, 0.4], ...]`
 
 ---
 
@@ -115,19 +115,13 @@ Multi-head attention allows the model to focus on different parts of the input s
 
 2. Compute attention for each head independently:
    Each head has its own $W_Q$, $W_K$, and $W_V$ matrices:
-   $$
-   \text{Head}_i = \text{Attention}(XW_Q^i, XW_K^i, XW_V^i)
-   $$
+   $\text{Head}_i = \text{Attention}(XW_Q^i, XW_K^i, XW_V^i)$
 
 3. Concatenate the outputs of all heads:
-   $$
-   \text{MultiHead}(Q, K, V) = \text{Concat}(\text{Head}_1, \text{Head}_2, ..., \text{Head}_h)
-   $$
+   $\text{MultiHead}(Q, K, V) = \text{Concat}(\text{Head}_1, \text{Head}_2, ..., \text{Head}_h)$
 
 4. Project the concatenated output back to `n_embd`:
-   $$
-   \text{Output} = \text{Concat}(\text{Heads}) W_O
-   $$
+   $\text{Output} = \text{Concat}(\text{Heads}) W_O$
    where $W_O \in \mathbb{R}^{n_{\text{embd}} \times n_{\text{embd}}}$ is the final linear projection matrix.
 
 ---
@@ -154,14 +148,10 @@ $[\text{Head}_1, \text{Head}_2]$, and project using $W_O$.
 ### 5. Loss Function
 
 After passing through the attention and feedforward layers, the model outputs logits for each character. The logits are converted to probabilities using the softmax function:
-$$
-P(y|x) = \frac{\exp(\text{logit}_y)}{\sum_{i} \exp(\text{logit}_i)}
-$$
+$P(y|x) = \frac{\exp(\text{logit}_y)}{\sum_{i} \exp(\text{logit}_i)}$
 
 The loss is computed using cross-entropy:
-$$
-\text{Loss} = -\sum_{i} y_i \log(P(y_i))
-$$
+$\text{Loss} = -\sum_{i} y_i \log(P(y_i))$
 where $y_i$ is the one-hot encoded true label and $P(y_i)$ is the predicted probability for the correct character.
 
 ---
@@ -170,12 +160,10 @@ where $y_i$ is the one-hot encoded true label and $P(y_i)$ is the predicted prob
 
 #### Gradient Computation
 Using the chain rule, gradients of the loss are computed for each layer:
-$$
-\frac{\partial \text{Loss}}{\partial W} = \frac{\partial \text{Loss}}{\partial \text{logits}} \cdot \frac{\partial \text{logits}}{\partial W}
-$$
+$\frac{\partial \text{Loss}}{\partial W} = \frac{\partial \text{Loss}}{\partial \text{logits}} \cdot \frac{\partial \text{logits}}{\partial W}$
 
 1. Compute $\frac{\partial \text{Loss}}{\partial \text{logits}}$:
-   $$\frac{\partial \text{Loss}}{\partial \text{logits}} = P(y) - y$$
+   $\frac{\partial \text{Loss}}{\partial \text{logits}} = P(y) - y$
 
 2. Propagate the gradients backward through:
    - Multi-head attention layers
@@ -188,18 +176,18 @@ $$
 
 Given the input "The dog ate my ", the model predicts the next character one at a time:
 
-1. Input: "The dog ate my "
-2. Encode the input into integers: [1, 6, 4, 0, 3, 5, 7, 0, 2, 8, 4, 0, 9, 13, 0]
+1. Input: `"The dog ate my "`
+2. Encode the input into integers: `[1, 6, 4, 0, 3, 5, 7, 0, 2, 8, 4, 0, 9, 13, 0]`
 3. Pass the encoded input through the model.
 4. The model predicts the next character based on the previous one:
-   - Input: "The dog ate my "
-   - Predicted next character: "h"
+   - Input: `"The dog ate my "`
+   - Predicted next character: `"h"`
 
 Repeat the process:
-- Input: "The dog ate my h"
-- Predicted next character: "o"
+- Input: `"The dog ate my h"`
+- Predicted next character: `"o"`
 
-Continue until the model generates the full sequence: "homework".
+Continue until the model generates the full sequence: `"homework"`.
 
 
 ```python
